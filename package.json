@@ -1,6 +1,6 @@
 {
     "name": "@remobile/react-native-3d-panel",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A 3d left menu like old version QQ",
     "main": "index.js",
     "author": {
