@@ -47,7 +47,7 @@ module.exports = React.createClass({
                     }
                     this.directionRight = (this.translateX > menuWidth * 3 / 4) ? true : (this.translateX < menuWidth / 4) ? false : gestureState.dx - this.lastGestureDx > 0;
                     this.lastGestureDx = gestureState.dx;
-                    this.animatedRotate.setValue(-this.translateX / 30);
+                    this.animatedRotate.setValue(-this.translateX);
                     this.animatedTranslateX.setValue(this.translateX);
                 }
             },
@@ -87,7 +87,7 @@ module.exports = React.createClass({
         this.animating = true;
         Animated.parallel([
             Animated.timing(this.animatedRotate, {
-                toValue: -menuWidth / 30,
+                toValue: -menuWidth,
                 duration: time,
             }),
             Animated.timing(this.animatedTranslateX, {
@@ -106,11 +106,20 @@ module.exports = React.createClass({
                 translateX: this.animatedTranslateX,
             }]
         };
-        const animatedRotateStyle = {
+        const animatedInnerTranslateXStyle = {
             transform: [{
-                rotateY: this.animatedRotate.interpolate({
+                translateX: this.animatedTranslateX.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, app.isandroid?0.7:0.8]
+                }),
+            }]
+        };
+        const animatedRotateStyle = {
+            transform: [
+                {perspective: sr.tw},
+                {rotateY: this.animatedRotate.interpolate({
                     inputRange: [-1, 0],
-                    outputRange: ['-1deg', '0deg']
+                    outputRange: ['-0.12deg', '0deg'],
                 }),
             }]
         };
@@ -119,7 +128,7 @@ module.exports = React.createClass({
                 <Animated.View style={[{flex: 1, width: menuWidth, position: 'absolute', left: -menuWidth, top: 0}, animatedTranslateXStyle]}>
                     {this.props.leftMenu}
                 </Animated.View>
-                <Animated.View style={[{flex: 1}, animatedTranslateXStyle]}>
+                <Animated.View style={[{flex: 1}, animatedInnerTranslateXStyle]}>
                     <Animated.View style={[{flex: 1}, animatedRotateStyle]}>
                         {this.props.children}
                     </Animated.View>
