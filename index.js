@@ -1,8 +1,8 @@
 'use strict';
 
-var React = require('react');
-var ReactNative = require('react-native');
-var {
+const React = require('react');
+const ReactNative = require('react-native');
+const {
     StyleSheet,
     View,
     Animated,
@@ -11,13 +11,13 @@ var {
 } = ReactNative;
 
 module.exports = React.createClass({
-    getDefaultProps() {
+    getDefaultProps () {
         return {
             speed: 500,
             menuWidth: Dimensions.get('window').width * 2 / 3,
         };
     },
-    componentWillMount() {
+    componentWillMount () {
         this.lastGestureDx = null;
         this.translateX = 0;
         this.animatedRotate = new Animated.Value(0);
@@ -35,8 +35,8 @@ module.exports = React.createClass({
                 this.lastGestureDx = null;
             },
             onPanResponderMove: (evt, gestureState) => {
-                const {menuWidth} = this.props;
-                const {changedTouches} = evt.nativeEvent;
+                const { menuWidth } = this.props;
+                const { changedTouches } = evt.nativeEvent;
                 if (changedTouches.length <= 1 && !this.animating) {
                     this.translateX += (this.lastGestureDx === null) ? 0 : gestureState.dx - this.lastGestureDx;
                     if (this.translateX < 0) {
@@ -60,11 +60,11 @@ module.exports = React.createClass({
                     }
                 }
             },
-            onPanResponderTerminate: (evt, gestureState)=> {}
+            onPanResponderTerminate: (evt, gestureState) => {},
         });
     },
-    repositionToLeft() {
-        const {speed, menuWidth} = this.props;
+    repositionToLeft () {
+        const { speed, menuWidth } = this.props;
         const time = (this.translateX / menuWidth) * speed;
         this.animating = true;
         Animated.parallel([
@@ -75,14 +75,14 @@ module.exports = React.createClass({
             Animated.timing(this.animatedTranslateX, {
                 toValue: 0,
                 duration: time,
-            })
-        ]).start(()=>{
+            }),
+        ]).start(() => {
             this.animating = false;
             this.translateX = 0;
         });
     },
-    repositionToRight() {
-        const {speed, menuWidth} = this.props;
+    repositionToRight () {
+        const { speed, menuWidth } = this.props;
         const time = speed - (this.translateX / menuWidth) * speed;
         this.animating = true;
         Animated.parallel([
@@ -93,52 +93,52 @@ module.exports = React.createClass({
             Animated.timing(this.animatedTranslateX, {
                 toValue: menuWidth,
                 duration: time,
-            })
-        ]).start(()=>{
+            }),
+        ]).start(() => {
             this.animating = false;
             this.translateX = menuWidth;
         });
     },
-    render() {
-        const {menuWidth, style} = this.props;
+    render () {
+        const { menuWidth, style } = this.props;
         const animatedTranslateXStyle = {
             transform: [{
                 translateX: this.animatedTranslateX,
-            }]
+            }],
         };
         const animatedInnerTranslateXStyle = {
             transform: [{
                 translateX: this.animatedTranslateX.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [0, app.isandroid?0.7:0.8]
+                    outputRange: [0, app.isandroid ? 0.7 : 0.8],
                 }),
-            }]
+            }],
         };
         const animatedRotateStyle = {
             transform: [
-                {perspective: sr.tw},
-                {rotateY: this.animatedRotate.interpolate({
+                { perspective: sr.tw },
+                { rotateY: this.animatedRotate.interpolate({
                     inputRange: [-1, 0],
                     outputRange: ['-0.12deg', '0deg'],
                 }),
-            }]
+                }],
         };
         return (
             <View style={[styles.container, style]} {...this.panResponder.panHandlers}>
-                <Animated.View style={[{flex: 1, width: menuWidth, position: 'absolute', left: -menuWidth, top: 0}, animatedTranslateXStyle]}>
+                <Animated.View style={[{ flex: 1, width: menuWidth, position: 'absolute', left: -menuWidth, top: 0 }, animatedTranslateXStyle]}>
                     {this.props.leftMenu}
                 </Animated.View>
-                <Animated.View style={[{flex: 1}, animatedInnerTranslateXStyle]}>
-                    <Animated.View style={[{flex: 1}, animatedRotateStyle]}>
+                <Animated.View style={[{ flex: 1 }, animatedInnerTranslateXStyle]}>
+                    <Animated.View style={[{ flex: 1 }, animatedRotateStyle]}>
                         {this.props.children}
                     </Animated.View>
                 </Animated.View>
             </View>
-        )
-    }
+        );
+    },
 });
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
